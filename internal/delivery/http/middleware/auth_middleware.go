@@ -14,6 +14,11 @@ func NewAuth(userUserCase *usecase.UserUseCase) fiber.Handler {
 		token := strings.Fields(request.Token)
 		userUserCase.Log.Debugf("Authorization : %s", token)
 
+		if len(token) != 2 || token[0] != "Bearer" {
+			userUserCase.Log.Warnf("Failed find user by token : %+v", token)
+			return fiber.ErrUnauthorized
+		}
+
 		auth, err := userUserCase.Verify(ctx.UserContext(), &model.VerifyUserRequest{Token: token[1]})
 		if err != nil {
 			userUserCase.Log.Warnf("Failed find user by token : %+v", err)

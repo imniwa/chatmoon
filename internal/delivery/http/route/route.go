@@ -2,7 +2,9 @@ package route
 
 import (
 	"chatmoon/internal/delivery/http"
+	"chatmoon/internal/delivery/http/socket"
 
+	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -11,12 +13,14 @@ type RouteConfig struct {
 	UserController        *http.UserController
 	RoomController        *http.RoomController
 	ChatHistoryController *http.ChatHistoryController
+	ChatRoomSocket        *socket.ChatRoomSocket
 	AuthMiddleware        fiber.Handler
 }
 
 func (c *RouteConfig) Setup() {
 	c.SetupGuestRoute()
 	c.SetupAuthRoute()
+	c.SetupConfigSocket()
 }
 
 func (c *RouteConfig) SetupGuestRoute() {
@@ -35,4 +39,11 @@ func (c *RouteConfig) SetupAuthRoute() {
 
 	c.App.Post("/api/rooms/:room_id/chats", c.ChatHistoryController.Insert)
 	c.App.Get("/api/rooms/:room_id/chats", c.ChatHistoryController.FindByRoomID)
+}
+
+func (c *RouteConfig) SetupConfigSocket() {
+	c.App.Use("/chatmoon", c.ChatRoomSocket.ChiChatHandler)
+	c.App.Get("/chatmoon/:room_id", websocket.New(c.ChatRoomSocket.ChitChatSocket, websocket.Config{
+		RecoverHandler: c.ChatRoomSocket.ChitChatRecover,
+	}))
 }

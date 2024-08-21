@@ -12,6 +12,12 @@ require (
 )
 
 require (
+	github.com/fasthttp/websocket v1.5.8 // indirect
+	github.com/gofiber/contrib/websocket v1.3.2 // indirect
+	github.com/savsgio/gotils v0.0.0-20240303185622-093b76447511 // indirect
+)
+
+require (
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.5 // indirect

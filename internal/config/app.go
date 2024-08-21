@@ -4,6 +4,7 @@ import (
 	"chatmoon/internal/delivery/http"
 	"chatmoon/internal/delivery/http/middleware"
 	"chatmoon/internal/delivery/http/route"
+	"chatmoon/internal/delivery/http/socket"
 	"chatmoon/internal/repository"
 	"chatmoon/internal/usecase"
 
@@ -38,6 +39,9 @@ func Bootstrap(config *BootstrapConfig) {
 	roomController := http.NewRoomController(config.Log, roomUseCase)
 	chatHistoryController := http.NewChatHistoryController(config.Log, chatHistoryUseCase)
 
+	// Setup Socket
+	chatRoomSocket := socket.NewChatRoomSocket(config.Log, chatHistoryUseCase, roomUseCase)
+
 	authMiddleware := middleware.NewAuth(userUsecase)
 
 	routeConfig := &route.RouteConfig{
@@ -45,6 +49,7 @@ func Bootstrap(config *BootstrapConfig) {
 		UserController:        userController,
 		RoomController:        roomController,
 		ChatHistoryController: chatHistoryController,
+		ChatRoomSocket:        chatRoomSocket,
 		AuthMiddleware:        authMiddleware,
 	}
 	routeConfig.Setup()
