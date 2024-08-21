@@ -13,6 +13,8 @@ type RouteConfig struct {
 }
 
 func (c *RouteConfig) Setup() {
+	c.SetupGuestRoute()
+	c.SetupAuthRoute()
 }
 
 func (c *RouteConfig) SetupGuestRoute() {

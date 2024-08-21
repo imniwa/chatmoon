@@ -32,7 +32,7 @@ func NewGORM(config *viper.Viper, log *logrus.Logger) *gorm.DB {
 		host := config.GetString("database.host")
 		port := config.GetInt("database.port")
 		database := config.GetString("database.name")
-		dsn = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", username, password, host, port, database)
+		dsn = fmt.Sprintf("postgres://%s:%s@%s:%d/%s", username, password, host, port, database)
 	}
 	log.Tracef("DSN: %s", dsn)
 

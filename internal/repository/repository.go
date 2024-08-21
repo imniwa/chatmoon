@@ -7,7 +7,7 @@ type Repository[T any] struct {
 }
 
 func (r *Repository[T]) Create(db *gorm.DB, data *T) error {
-	return r.DB.Create(data).Error
+	return db.Create(data).Error
 }
 
 func (r *Repository[T]) Update(db *gorm.DB, entity *T) error {

@@ -20,8 +20,9 @@ func main() {
 		Config:   viperConfig,
 	})
 
+	webHost := viperConfig.GetString("web.host")
 	webPort := viperConfig.GetString("web.port")
-	err := app.Listen(fmt.Sprintf(":%s", webPort))
+	err := app.Listen(fmt.Sprintf("%s:%s", webHost, webPort))
 	if err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
