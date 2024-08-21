@@ -8,7 +8,7 @@ type ChatHistory struct {
 	UserID    string    `gorm:"foreignkey:users;references:user_id"`
 	Message   string    `gorm:"column:message"`
 	CreatedAt time.Time `gorm:"column:created_at;autoCreateTime:true"`
-	UpdateAt  time.Time `gorm:"column:updated_at;autoCreateTime:true;autoUpdateTime:true"`
+	UpdatedAt time.Time `gorm:"column:updated_at;autoCreateTime:true;autoUpdateTime:true"`
 }
 
 func (ch *ChatHistory) TableName() string {

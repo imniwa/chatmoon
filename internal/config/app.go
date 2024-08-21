@@ -26,22 +26,26 @@ func Bootstrap(config *BootstrapConfig) {
 	// Setup Repository
 	userRepository := repository.NewUserRepository(config.Log)
 	roomRepository := repository.NewRoomRepository(config.Log)
+	chatHistoryRepository := repository.NewChatHistoryRepository(config.Log)
 
 	// Setup Usecase
 	userUsecase := usecase.NewUserUseCase(config.DB, config.Log, config.Validate, userRepository)
 	roomUseCase := usecase.NewRoomUseCase(config.DB, config.Log, config.Validate, roomRepository)
+	chatHistoryUseCase := usecase.NewChatHistoryUseCase(config.DB, config.Log, config.Validate, chatHistoryRepository)
 
 	// Setup Controller
 	userController := http.NewUserController(config.Log, userUsecase)
 	roomController := http.NewRoomController(config.Log, roomUseCase)
+	chatHistoryController := http.NewChatHistoryController(config.Log, chatHistoryUseCase)
 
 	authMiddleware := middleware.NewAuth(userUsecase)
 
 	routeConfig := &route.RouteConfig{
-		App:            config.App,
-		UserController: userController,
-		RoomController: roomController,
-		AuthMiddleware: authMiddleware,
+		App:                   config.App,
+		UserController:        userController,
+		RoomController:        roomController,
+		ChatHistoryController: chatHistoryController,
+		AuthMiddleware:        authMiddleware,
 	}
 	routeConfig.Setup()
 }

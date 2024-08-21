@@ -7,10 +7,11 @@ import (
 )
 
 type RouteConfig struct {
-	App            *fiber.App
-	UserController *http.UserController
-	RoomController *http.RoomController
-	AuthMiddleware fiber.Handler
+	App                   *fiber.App
+	UserController        *http.UserController
+	RoomController        *http.RoomController
+	ChatHistoryController *http.ChatHistoryController
+	AuthMiddleware        fiber.Handler
 }
 
 func (c *RouteConfig) Setup() {
@@ -31,4 +32,7 @@ func (c *RouteConfig) SetupAuthRoute() {
 
 	c.App.Post("/api/rooms", c.RoomController.Create)
 	c.App.Get("/api/rooms", c.RoomController.List)
+
+	c.App.Post("/api/rooms/:room_id/chats", c.ChatHistoryController.Insert)
+	c.App.Get("/api/rooms/:room_id/chats", c.ChatHistoryController.FindByRoomID)
 }
