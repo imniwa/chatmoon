@@ -9,6 +9,7 @@ import (
 type RouteConfig struct {
 	App            *fiber.App
 	UserController *http.UserController
+	RoomController *http.RoomController
 	AuthMiddleware fiber.Handler
 }
 
@@ -27,4 +28,7 @@ func (c *RouteConfig) SetupAuthRoute() {
 	c.App.Delete("/api/users", c.UserController.Logout)
 	c.App.Patch("/api/users/_current", c.UserController.Update)
 	c.App.Get("/api/users/_current", c.UserController.Current)
+
+	c.App.Post("/api/rooms", c.RoomController.Create)
+	c.App.Get("/api/rooms", c.RoomController.List)
 }

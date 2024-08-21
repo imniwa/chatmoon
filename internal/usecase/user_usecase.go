@@ -35,8 +35,7 @@ func (c *UserUseCase) Verify(ctx context.Context, request *model.VerifyUserReque
 	tx := c.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	err := c.Validate.Struct(request)
-	if err != nil {
+	if err := c.Validate.Struct(request); err != nil {
 		c.Log.Warnf("Invalid request body : %+v", err)
 		return nil, fiber.ErrBadRequest
 	}

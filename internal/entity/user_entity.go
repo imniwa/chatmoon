@@ -9,6 +9,7 @@ type User struct {
 	Token       string    `gorm:"column:token"`
 	CreatedAt   time.Time `gorm:"column:created_at;autoCreateTime:true"`
 	UpdatedAt   time.Time `gorm:"column:updated_at;autoCreateTime:true;autoUpdateTime:true"`
+	Rooms       []Room    `gorm:"foreignKey:CreatedBy;references:ID"`
 }
 
 func (u *User) TableName() string {
