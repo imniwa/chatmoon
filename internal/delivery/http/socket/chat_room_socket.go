@@ -65,8 +65,8 @@ func (c *ChatRoomSocket) ChitChatSocket(conn *websocket.Conn) {
 	for {
 		if err := conn.ReadJSON(payload); err != nil {
 			c.Log.Debug("Error read json : ", err)
-			break
 		}
+
 		switch payload.Type {
 		case MESSAGE_CHAT:
 			c.HandleBroadcastMessage(payload)
