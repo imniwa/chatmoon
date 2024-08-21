@@ -40,7 +40,7 @@ func Bootstrap(config *BootstrapConfig) {
 	chatHistoryController := http.NewChatHistoryController(config.Log, chatHistoryUseCase)
 
 	// Setup Socket
-	chatRoomSocket := socket.NewChatRoomSocket(config.Log, chatHistoryUseCase, roomUseCase)
+	chatRoomSocket := socket.NewChatRoomSocket(config.DB, config.Log, roomRepository)
 
 	authMiddleware := middleware.NewAuth(userUsecase)
 

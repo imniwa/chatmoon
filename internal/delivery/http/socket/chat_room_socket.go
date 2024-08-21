@@ -2,41 +2,47 @@ package socket
 
 import (
 	"chatmoon/internal/model"
-	"chatmoon/internal/usecase"
+	"chatmoon/internal/repository"
 	"fmt"
 
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 )
 
 const (
-	MESSAGE_ONLINE  = "online"
-	MESSAGE_OFFLINE = "offline"
-	MESSAGE_CHAT    = "chat"
+	MESSAGE_CHAT = "chat"
 )
 
 type ChatRoomSocket struct {
-	Log                *logrus.Logger
-	ChatHistoryUseCase *usecase.ChatHistoryUseCase
-	RoomUseCase        *usecase.RoomUseCase
-	Connections        map[string][]*websocket.Conn
+	DB             *gorm.DB
+	Log            *logrus.Logger
+	RoomRepository *repository.RoomRepository
+	Connections    map[string][]*websocket.Conn
 }
 
-func NewChatRoomSocket(log *logrus.Logger, chatHistoryUseCase *usecase.ChatHistoryUseCase, roomUseCase *usecase.RoomUseCase) *ChatRoomSocket {
+func NewChatRoomSocket(db *gorm.DB, log *logrus.Logger, RoomRepository *repository.RoomRepository) *ChatRoomSocket {
 	return &ChatRoomSocket{
-		Log:                log,
-		ChatHistoryUseCase: chatHistoryUseCase,
-		RoomUseCase:        roomUseCase,
-		Connections:        make(map[string][]*websocket.Conn, 0),
+		DB:             db,
+		Log:            log,
+		RoomRepository: RoomRepository,
+		Connections:    make(map[string][]*websocket.Conn, 0),
 	}
 }
 
-func (c *ChatRoomSocket) ChiChatHandler(ctx *fiber.Ctx) error {
-	if websocket.IsWebSocketUpgrade(ctx) {
-		return ctx.Next()
+func (c *ChatRoomSocket) ChitChatHandler(ctx *fiber.Ctx) error {
+	if !websocket.IsWebSocketUpgrade(ctx) {
+		return fiber.ErrUpgradeRequired
 	}
-	return fiber.ErrUpgradeRequired
+
+	roomId := ctx.Params("room_id")
+	count, err := c.RoomRepository.CountById(c.DB, roomId)
+	if err != nil || count == 0 {
+		return fiber.ErrNotFound
+	}
+
+	return ctx.Next()
 }
 
 func (c *ChatRoomSocket) ChitChatSocket(conn *websocket.Conn) {

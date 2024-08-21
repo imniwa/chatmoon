@@ -42,8 +42,7 @@ func (c *RouteConfig) SetupAuthRoute() {
 }
 
 func (c *RouteConfig) SetupConfigSocket() {
-	c.App.Use("/chatmoon", c.ChatRoomSocket.ChiChatHandler)
-	c.App.Get("/chatmoon/:room_id", websocket.New(c.ChatRoomSocket.ChitChatSocket, websocket.Config{
+	c.App.Get("/chatmoon/:room_id", c.ChatRoomSocket.ChitChatHandler, websocket.New(c.ChatRoomSocket.ChitChatSocket, websocket.Config{
 		RecoverHandler: c.ChatRoomSocket.ChitChatRecover,
 	}))
 }
